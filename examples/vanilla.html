@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Joke of the Day</title>
+<style>
+	.joke { font-family: system-ui, sans-serif; max-width: 32rem; padding: 1rem 1.25rem; border: 1px solid #e2e8f0; border-radius: 12px; }
+	.joke-title { color: #c2410c; font-size: .8rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+	.joke-setup { font-weight: 600; }
+	.joke button { background: none; border: 0; padding: 0; color: #c2410c; font: inherit; font-weight: 700; cursor: pointer; }
+	.joke-credit { font-size: .8rem; }
+</style>
+</head>
+<body>
+
+<div class="joke" id="joke" hidden>
+	<div class="joke-title" id="joke-title"></div>
+	<p class="joke-setup" id="joke-setup"></p>
+	<button type="button" id="joke-reveal" hidden></button>
+	<p id="joke-punchline" hidden></p>
+	<p class="joke-credit">Joke of the day by <a id="joke-link" href="https://www.giggletime.app/">GiggleTime</a></p>
+</div>
+
+<script>
+// Change "en" to any of the 26 language codes.
+fetch('https://www.giggletime.app/embed/today?lang=en')
+	.then(function (response) { return response.json(); })
+	.then(function (data) {
+		var joke = data.joke;
+		if (!joke) { return; }
+		var box = document.getElementById('joke');
+		var setup = document.getElementById('joke-setup');
+		var punchline = document.getElementById('joke-punchline');
+		var button = document.getElementById('joke-reveal');
+
+		document.getElementById('joke-title').textContent = data.labels.title;
+		document.getElementById('joke-link').href = joke.url;
+		box.dir = joke.rtl ? 'rtl' : 'ltr';
+
+		if (joke.setup && joke.punchline) {
+			setup.textContent = joke.setup;
+			punchline.textContent = joke.punchline;
+			button.textContent = data.labels.reveal;
+			button.hidden = false;
+			button.addEventListener('click', function () {
+				punchline.hidden = false;
+				button.hidden = true;
+			});
+		} else {
+			setup.textContent = joke.text;
+		}
+		box.hidden = false;
+	});
+</script>
+</body>
+</html>
